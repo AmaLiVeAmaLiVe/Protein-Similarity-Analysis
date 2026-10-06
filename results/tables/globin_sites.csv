@@ -1,0 +1,6 @@
+Protein,Distal_His_Residue,Distal_His_Conserved,Proximal_His_Residue,Proximal_His_Conserved
+HBA_HUMAN,H59,True,H88,True
+HBB_HUMAN,H64,True,H93,True
+MYG_HUMAN,H65,True,H94,True
+MYG_PHYMC,H65,True,H94,True
+NGB_HUMAN,H64,True,R94,False
