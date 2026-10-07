@@ -1,0 +1,13 @@
+{
+  "reference_id": "HBA_HUMAN",
+  "sites": {
+    "Distal_His": {
+      "pos": 59,
+      "expected_aa": "H"
+    },
+    "Proximal_His": {
+      "pos": 88,
+      "expected_aa": "H"
+    }
+  }
+}

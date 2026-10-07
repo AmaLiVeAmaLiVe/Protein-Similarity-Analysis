@@ -34,7 +34,7 @@ def calculate_identity(aligned_seq1: str, aligned_seq2: str, min_len: int) -> fl
     return (matches/min_len) * 100.00
 
 
-def compute_similiraity_matrix(records: List[SeqRecord]) -> Tuple[pd.DataFrame, pd.DataFrame]:
+def compute_similarity_matrix(records: List[SeqRecord]) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
     Builds symmetric Percent Identity and Distance matrices for all sequence pairs.
     Args:

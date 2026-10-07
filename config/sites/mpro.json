@@ -1,0 +1,207 @@
+{
+  "reference_id": "R1A_SARS",
+  "accession": "P0C6U8",
+  "source": "UniProtKB/Swiss-Prot",
+  "sites": {
+    "Active_site_1040_For_ADP-ribosylhydrolase_": {
+      "pos": 1040,
+      "expected_aa": "N",
+      "description": "For ADP-ribosylhydrolase activity"
+    },
+    "Active_site_1048_For_ADP-ribosylhydrolase_": {
+      "pos": 1048,
+      "expected_aa": "G",
+      "description": "For ADP-ribosylhydrolase activity"
+    },
+    "Active_site_1651_For_PL-PRO_activity": {
+      "pos": 1651,
+      "expected_aa": "C",
+      "description": "For PL-PRO activity"
+    },
+    "Active_site_1812_For_PL-PRO_activity": {
+      "pos": 1812,
+      "expected_aa": "H",
+      "description": "For PL-PRO activity"
+    },
+    "Active_site_1826_For_PL-PRO_activity": {
+      "pos": 1826,
+      "expected_aa": "D",
+      "description": "For PL-PRO activity"
+    },
+    "Active_site_3281_For_3CL-PRO_activity": {
+      "pos": 3281,
+      "expected_aa": "H",
+      "description": "For 3CL-PRO activity"
+    },
+    "Active_site_3385_For_3CL-PRO_activity": {
+      "pos": 3385,
+      "expected_aa": "C",
+      "description": "For 3CL-PRO activity"
+    },
+    "Binding_site_200_": {
+      "pos": 200,
+      "expected_aa": "C",
+      "description": ""
+    },
+    "Binding_site_231_": {
+      "pos": 231,
+      "expected_aa": "C",
+      "description": ""
+    },
+    "Binding_site_234_": {
+      "pos": 234,
+      "expected_aa": "H",
+      "description": ""
+    },
+    "Binding_site_236_": {
+      "pos": 236,
+      "expected_aa": "H",
+      "description": ""
+    },
+    "Binding_site_323_": {
+      "pos": 323,
+      "expected_aa": "C",
+      "description": ""
+    },
+    "Binding_site_326_": {
+      "pos": 326,
+      "expected_aa": "C",
+      "description": ""
+    },
+    "Binding_site_341_": {
+      "pos": 341,
+      "expected_aa": "C",
+      "description": ""
+    },
+    "Binding_site_344_": {
+      "pos": 344,
+      "expected_aa": "C",
+      "description": ""
+    },
+    "Binding_site_370_": {
+      "pos": 370,
+      "expected_aa": "C",
+      "description": ""
+    },
+    "Binding_site_373_": {
+      "pos": 373,
+      "expected_aa": "C",
+      "description": ""
+    },
+    "Binding_site_382_": {
+      "pos": 382,
+      "expected_aa": "H",
+      "description": ""
+    },
+    "Binding_site_416_": {
+      "pos": 416,
+      "expected_aa": "C",
+      "description": ""
+    },
+    "Binding_site_1022_": {
+      "pos": 1022,
+      "expected_aa": "D",
+      "description": ""
+    },
+    "Binding_site_1729_": {
+      "pos": 1729,
+      "expected_aa": "C",
+      "description": ""
+    },
+    "Binding_site_1732_": {
+      "pos": 1732,
+      "expected_aa": "C",
+      "description": ""
+    },
+    "Binding_site_1764_": {
+      "pos": 1764,
+      "expected_aa": "C",
+      "description": ""
+    },
+    "Binding_site_1766_": {
+      "pos": 1766,
+      "expected_aa": "C",
+      "description": ""
+    },
+    "Binding_site_2376_": {
+      "pos": 2376,
+      "expected_aa": "H",
+      "description": ""
+    },
+    "Binding_site_2381_": {
+      "pos": 2381,
+      "expected_aa": "C",
+      "description": ""
+    },
+    "Binding_site_2386_": {
+      "pos": 2386,
+      "expected_aa": "C",
+      "description": ""
+    },
+    "Binding_site_2389_": {
+      "pos": 2389,
+      "expected_aa": "C",
+      "description": ""
+    },
+    "Binding_site_2422_": {
+      "pos": 2422,
+      "expected_aa": "C",
+      "description": ""
+    },
+    "Binding_site_2425_": {
+      "pos": 2425,
+      "expected_aa": "H",
+      "description": ""
+    },
+    "Binding_site_2429_": {
+      "pos": 2429,
+      "expected_aa": "C",
+      "description": ""
+    },
+    "Binding_site_2432_": {
+      "pos": 2432,
+      "expected_aa": "C",
+      "description": ""
+    },
+    "Binding_site_4304_": {
+      "pos": 4304,
+      "expected_aa": "C",
+      "description": ""
+    },
+    "Binding_site_4307_": {
+      "pos": 4307,
+      "expected_aa": "C",
+      "description": ""
+    },
+    "Binding_site_4313_": {
+      "pos": 4313,
+      "expected_aa": "H",
+      "description": ""
+    },
+    "Binding_site_4320_": {
+      "pos": 4320,
+      "expected_aa": "C",
+      "description": ""
+    },
+    "Binding_site_4347_": {
+      "pos": 4347,
+      "expected_aa": "C",
+      "description": ""
+    },
+    "Binding_site_4350_": {
+      "pos": 4350,
+      "expected_aa": "C",
+      "description": ""
+    },
+    "Binding_site_4358_": {
+      "pos": 4358,
+      "expected_aa": "C",
+      "description": ""
+    },
+    "Binding_site_4360_": {
+      "pos": 4360,
+      "expected_aa": "C",
+      "description": ""
+    }
+  }
+}
