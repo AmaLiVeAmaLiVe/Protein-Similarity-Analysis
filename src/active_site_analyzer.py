@@ -1,102 +1,118 @@
 """
-active_site_analyzer.py
-Enhanced universal analyzer that maps functional residues across homologous proteins.
-Includes local window search (tolerance for alignment drift/indels) and 
-physicochemical property evaluation.
+Universal analyzer that maps arbitrary functional residues across homologous
+sequences and evaluates both strict conservation and physicochemical shifts.
 """
+
 
 from typing import List, Dict, Tuple, Optional
 import pandas as pd
 from Bio.SeqRecord import SeqRecord
 from src.aligner import get_configured_aligner
 
-# Groupings of amino acids by biochemical properties
-AMINO_ACID_GROUPS = {
-    "Acidic": {"D", "E"},
-    "Basic": {"K", "R", "H"},
-    "Polar_Neutral": {"S", "T", "N", "Q"},
-    "Hydrophobic_Aliphatic": {"A", "V", "L", "I", "M"},
-    "Hydrophobic_Aromatic": {"F", "Y", "W"},
-    "Special": {"P", "G", "C"},
+
+# Standard IUPAC amino acid physicochemical classifications
+AA_PROPERTIES = {
+    # Negatively Charged / Acidic
+    "D": "Acidic (-)", "E": "Acidic (-)",
+    # Positively Charged / Basic
+    "K": "Basic (+)", "R": "Basic (+)", "H": "Basic (+)",
+    # Polar Uncharged / Neutral
+    "S": "Polar Neutral", "T": "Polar Neutral", "N": "Polar Neutral", "Q": "Polar Neutral",
+    # Hydrophobic Aliphatic
+    "A": "Hydrophobic Aliphatic", "V": "Hydrophobic Aliphatic", 
+    "L": "Hydrophobic Aliphatic", "I": "Hydrophobic Aliphatic", "M": "Hydrophobic Aliphatic",
+    # Hydrophobic Aromatic
+    "F": "Aromatic", "Y": "Aromatic", "W": "Aromatic",
+    # Special Conformation
+    "P": "Conformational (Pro)", "G": "Conformational (Gly)", "C": "Crosslinking (Cys)"
 }
 
-def get_aa_group(aa: str) -> str:
-    for group, members in AMINO_ACID_GROUPS.items():
-        if aa in members:
-            return group
-    return "Unknown"
+
+def get_property(aa: str) -> str:
+    """Returns the biochemical class of an amino acid."""
+    return AA_PROPERTIES.get(aa.upper(), "Unknown")
 
 
-def map_reference_residue_enhanced(
+def map_reference_residue(
     ref_seq: str, 
     target_seq: str, 
     ref_pos_1indexed: int, 
     expected_aa: str, 
-    aligner,
+    aligner=None,
     window_tolerance: int = 2
 ) -> Dict[str, any]:
     """
-    Maps a 1-indexed position from ref_seq to target_seq.
-    If the exact aligned position doesn't match expected_aa, it checks
-    within +/- window_tolerance to detect alignment drift around gaps.
+    Maps a 1-indexed reference coordinate to target_seq.
+    Uses adaptive Needleman-Wunsch / Smith-Waterman routing.
     """
-    alignment = aligner.align(ref_seq, target_seq)[0]
+    from src.aligner import get_configured_aligner, select_alignment_mode
+
+    # Auto-select mode based on length ratio
+    mode = select_alignment_mode(ref_seq, target_seq)
+    active_aligner = get_configured_aligner(mode=mode)
+    
+    alignment = active_aligner.align(ref_seq, target_seq)[0]
+    
+    # In Biopython PairwiseAlignment, coordinates track exact start/end slices
     aligned_ref = str(alignment[0])
     aligned_tgt = str(alignment[1])
+    ref_start = alignment.coordinates[0][0]
+    tgt_start = alignment.coordinates[1][0]
 
-    current_ref_pos = 0
-    current_tgt_pos = 0
-    target_aligned_idx = None
-    target_pos_at_site = None
-    target_aa_at_site = "-"
+    current_ref_pos = ref_start
+    current_tgt_pos = tgt_start
+    target_pos = None
+    target_aa = "-"
 
-    for idx, (r_char, t_char) in enumerate(zip(aligned_ref, aligned_tgt)):
+    for r_char, t_char in zip(aligned_ref, aligned_tgt):
         if r_char != "-":
             current_ref_pos += 1
         if t_char != "-":
             current_tgt_pos += 1
 
         if current_ref_pos == ref_pos_1indexed and r_char != "-":
-            target_aligned_idx = idx
-            target_aa_at_site = t_char
-            target_pos_at_site = current_tgt_pos if t_char != "-" else None
+            target_aa = t_char
+            target_pos = current_tgt_pos if t_char != "-" else None
             break
 
-    # Exact match check
-    exact_match = (target_aa_at_site == expected_aa)
-    shifted_match_found = False
+    # Tolerance fallback & property classification
+    exact_match = (target_aa == expected_aa)
     shifted_pos = None
 
-    # If exact match failed and tolerance is enabled, scan local sequence window
-    if not exact_match and target_pos_at_site is not None:
-        start_scan = max(1, target_pos_at_site - window_tolerance)
-        end_scan = min(len(target_seq), target_pos_at_site + window_tolerance)
-        
+    if not exact_match and target_pos is not None:
+        start_scan = max(1, target_pos - window_tolerance)
+        end_scan = min(len(target_seq), target_pos + window_tolerance)
         for candidate_pos in range(start_scan, end_scan + 1):
-            if candidate_pos != target_pos_at_site and target_seq[candidate_pos - 1] == expected_aa:
-                shifted_match_found = True
+            if candidate_pos != target_pos and target_seq[candidate_pos - 1] == expected_aa:
                 shifted_pos = candidate_pos
                 break
 
-    # Determine status
+    ref_prop = get_property(expected_aa)
+    tgt_prop = get_property(target_aa)
+
     if exact_match:
-        status = "Conserved"
-    elif shifted_match_found:
-        status = f"Conserved (Shifted to pos {shifted_pos})"
+        interpretation = "Conserved Identical"
+        is_conserved = True
+    elif shifted_pos is not None:
+        interpretation = f"Conserved (Register shifted to pos {shifted_pos})"
+        is_conserved = True
+    elif target_aa == "-":
+        interpretation = "Deleted / Gapped"
+        is_conserved = False
+    elif ref_prop == tgt_prop:
+        interpretation = f"Conservative Swap ({ref_prop})"
+        is_conserved = True
     else:
-        # Check if mutation preserves biochemical group
-        exp_group = get_aa_group(expected_aa)
-        tgt_group = get_aa_group(target_aa_at_site)
-        if exp_group == tgt_group:
-            status = f"Conservative ({exp_group})"
-        else:
-            status = "Non-conserved"
+        interpretation = f"Diverged ({ref_prop} -> {tgt_prop})"
+        is_conserved = False
+
+    residue_label = f"{target_aa}{target_pos if target_pos is not None else '-'}"
 
     return {
-        "residue": f"{target_aa_at_site}{target_pos_at_site if target_pos_at_site else '-'}",
-        "exact_conserved": exact_match,
-        "shifted_pos": shifted_pos,
-        "status": status,
+        "residue": residue_label,
+        "is_conserved": is_conserved,
+        "interpretation": interpretation,
+        "alignment_mode": mode
     }
 
 
@@ -107,22 +123,23 @@ def inspect_active_sites(
     window_tolerance: int = 2
 ) -> pd.DataFrame:
     """
-    Enhanced active-site analyzer supporting tolerance for alignment drift.
+    Universal functional residue inspector.
     """
     aligner = get_configured_aligner()
     ref_rec = next((r for r in records if r.id == ref_id), None)
     if not ref_rec:
-        raise ValueError(f"Reference '{ref_id}' not found.")
+        raise ValueError(f"Reference '{ref_id}' not found among loaded sequences.")
 
     ref_seq = str(ref_rec.seq)
 
-    # Validate reference positions
+    # Validate reference positions against expected amino acids
     for site_name, cfg in sites_config.items():
         pos = cfg["pos"]
         exp_aa = cfg["expected_aa"]
         actual_aa = ref_seq[pos - 1]
         if actual_aa != exp_aa:
             raise ValueError(
+                f"Reference validation error for '{site_name}': "
                 f"Position {pos} in '{ref_id}' is '{actual_aa}', expected '{exp_aa}'."
             )
 
@@ -137,11 +154,11 @@ def inspect_active_sites(
 
             if rec.id == ref_id:
                 row[f"{site_name}_Residue"] = f"{exp_aa}{pos}"
-                row[f"{site_name}_Status"] = "Reference"
+                row[f"{site_name}_Effect"] = "Reference"
                 row[f"{site_name}_Conserved"] = True
                 continue
 
-            res_info = map_reference_residue_enhanced(
+            res_info = map_reference_residue(
                 ref_seq=ref_seq,
                 target_seq=tgt_seq,
                 ref_pos_1indexed=pos,
@@ -151,9 +168,8 @@ def inspect_active_sites(
             )
 
             row[f"{site_name}_Residue"] = res_info["residue"]
-            row[f"{site_name}_Status"] = res_info["status"]
-            # Conserved if exact match OR shifted nearby match found
-            row[f"{site_name}_Conserved"] = res_info["exact_conserved"] or (res_info["shifted_pos"] is not None)
+            row[f"{site_name}_Effect"] = res_info["interpretation"]
+            row[f"{site_name}_Conserved"] = res_info["is_conserved"]
 
         rows.append(row)
 
