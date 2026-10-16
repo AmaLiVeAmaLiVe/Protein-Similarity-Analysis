@@ -1,0 +1,47 @@
+{
+  "reference_id": "TRY1_BOVIN",
+  "accession": "P00760",
+  "source": "UniProtKB/Swiss-Prot",
+  "sites": {
+    "Active_site_63_Charge_relay_system": {
+      "pos": 63,
+      "expected_aa": "H",
+      "description": "Charge relay system"
+    },
+    "Active_site_107_Charge_relay_system": {
+      "pos": 107,
+      "expected_aa": "D",
+      "description": "Charge relay system"
+    },
+    "Active_site_200_Charge_relay_system": {
+      "pos": 200,
+      "expected_aa": "S",
+      "description": "Charge relay system"
+    },
+    "Binding_site_75_": {
+      "pos": 75,
+      "expected_aa": "E",
+      "description": ""
+    },
+    "Binding_site_77_": {
+      "pos": 77,
+      "expected_aa": "N",
+      "description": ""
+    },
+    "Binding_site_80_": {
+      "pos": 80,
+      "expected_aa": "V",
+      "description": ""
+    },
+    "Binding_site_85_": {
+      "pos": 85,
+      "expected_aa": "E",
+      "description": ""
+    },
+    "Binding_site_200_": {
+      "pos": 200,
+      "expected_aa": "S",
+      "description": ""
+    }
+  }
+}

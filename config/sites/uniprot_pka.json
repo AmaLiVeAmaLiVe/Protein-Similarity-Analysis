@@ -1,0 +1,17 @@
+{
+  "reference_id": "KAPCA_HUMAN",
+  "accession": "P17612",
+  "source": "UniProtKB/Swiss-Prot",
+  "sites": {
+    "Active_site_167_Proton_acceptor": {
+      "pos": 167,
+      "expected_aa": "D",
+      "description": "Proton acceptor"
+    },
+    "Binding_site_73_": {
+      "pos": 73,
+      "expected_aa": "K",
+      "description": ""
+    }
+  }
+}
